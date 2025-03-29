@@ -61,4 +61,18 @@ public class UsuarioController {
         usuarioService.deletarUsuarioPorEmail(emailUsuario);
     }
 
+    @PutMapping("/{idUsuario}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Atualizar usuário por Id", description = "Atualiza todos os dados do usário pelo Id do usuário")
+    public void atualizarUsuarioPorId(@PathVariable Long idUsuario, @RequestBody Usuario usuario){
+        usuarioService.atualizarUsuarioPorId(idUsuario, usuario);
+    }
+
+    @PutMapping("/emails/{emailUsuario}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Atualizar usuário por Email", description = "Atualiza todos os dados do usário pelo Email do usuário")
+    public void atualizarUsuarioPorEmail(@PathVariable String emailUsuario, @RequestBody Usuario usuario){
+        usuarioService.atualizarUsuarioPorEmail(emailUsuario, usuario);
+    }
+
 }
