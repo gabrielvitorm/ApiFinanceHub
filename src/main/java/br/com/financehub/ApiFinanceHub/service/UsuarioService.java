@@ -7,6 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -26,5 +27,17 @@ import java.util.List;
 
     public List<Usuario> listarTodosUsuarios(){
         return usuarioRepository.findAll();
+    }
+
+    public Optional<Usuario> listarUsuarioPorId(Long idUsuario){
+        if (usuarioRepository.existsById(idUsuario)){
+            return usuarioRepository.findById(idUsuario);
+        }else {
+            throw new RuntimeException("Usuário não encontrado!");
+        }
+    }
+
+    public Optional<Usuario> findByEmailUsuario(String emailUsuario){
+        return usuarioRepository.findByEmailUsuario(emailUsuario);
     }
 }

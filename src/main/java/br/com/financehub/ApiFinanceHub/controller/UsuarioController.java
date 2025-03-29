@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -32,5 +33,18 @@ public class UsuarioController {
         return usuarioService.listarTodosUsuarios();
     }
 
-    
+    @GetMapping("/{idUsuario}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Listar usuários por Id", description = "Lista os usuários pelo id do usuário")
+    public Optional<Usuario> listarUsuarioPorId(@PathVariable Long idUsuario){
+        return usuarioService.listarUsuarioPorId(idUsuario);
+    }
+
+    @GetMapping("/emails/{emailUsuario}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Listar usuários por Email", description = "Lista os usuários pelo email")
+    public Optional<Usuario> findByEmailUsuario(@PathVariable String emailUsuario){
+        return usuarioService.findByEmailUsuario(emailUsuario);
+    }
+
 }
