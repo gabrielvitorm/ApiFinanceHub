@@ -23,6 +23,9 @@ public class Usuario {
     @Column(name = "nome_usuario", nullable = false)
     private String nomeUsuario;
 
+    @Column(name = "senha_usuario", nullable = false)
+    private String senhaUsuario;
+
     @Column(name = "email_usuario", nullable = false, unique = true)
     private String emailUsuario;
 
@@ -36,6 +39,6 @@ public class Usuario {
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "data_modificacao_usuario", nullable = false, updatable = false)
+    @Column(name = "data_modificacao_usuario", updatable = false)
     private LocalDateTime dataModificacao;
 }
