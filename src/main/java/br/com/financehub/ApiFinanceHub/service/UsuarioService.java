@@ -40,4 +40,22 @@ import java.util.Optional;
     public Optional<Usuario> findByEmailUsuario(String emailUsuario){
         return usuarioRepository.findByEmailUsuario(emailUsuario);
     }
+
+    public void deletarUsuarioPorId(Long idUsuario){
+        if (usuarioRepository.existsById(idUsuario)){
+            usuarioRepository.deleteById(idUsuario);
+        }else {
+            throw new RuntimeException("Usuário não encontrado!");
+        }
+    }
+
+    public void deletarUsuarioPorEmail(String emailUsuario){
+        Optional<Usuario> usuarioDeletar = usuarioRepository.findByEmailUsuario(emailUsuario);
+
+        if (usuarioDeletar.isPresent()) {
+            usuarioRepository.delete(usuarioDeletar.get());
+        } else {
+            throw new RuntimeException("Usuário não encontrado!");
+        }
+    }
 }

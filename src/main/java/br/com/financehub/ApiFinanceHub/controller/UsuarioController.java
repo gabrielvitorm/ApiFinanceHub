@@ -47,4 +47,18 @@ public class UsuarioController {
         return usuarioService.findByEmailUsuario(emailUsuario);
     }
 
+    @DeleteMapping("/ids/{idUsuario}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Deletar usuário por Id", description = "Deleta o usário pelo Id do usuário")
+    public void deletarUsuarioPorId(@PathVariable Long idUsuario){
+        usuarioService.deletarUsuarioPorId(idUsuario);
+    }
+
+    @DeleteMapping("/emails/{emailUsuario}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Deletar usuário por Email", description = "Deleta o usário pelo Email do usuário")
+    public void deletarUsuarioPorEmail(@PathVariable String emailUsuario){
+        usuarioService.deletarUsuarioPorEmail(emailUsuario);
+    }
+
 }

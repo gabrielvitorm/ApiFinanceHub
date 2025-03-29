@@ -10,4 +10,7 @@ import java.util.Optional;
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     Optional<Usuario> findByEmailUsuario(String emailUsuario);
+
+    @Override
+    void delete(Usuario usuario);
 }
