@@ -1,5 +1,6 @@
 package br.com.financehub.ApiFinanceHub.service;
 
+import br.com.financehub.ApiFinanceHub.dto.AtualizarSenhaDTO;
 import br.com.financehub.ApiFinanceHub.model.Usuario;
 import br.com.financehub.ApiFinanceHub.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -155,5 +156,21 @@ import java.util.Optional;
         }
 
         return usuarioAutenticado;
+    }
+
+    public void atualizarSenhaPorEmailCpf(AtualizarSenhaDTO dto) {
+        Optional<Usuario> usuarioBancoDeDados = usuarioRepository.findByEmailUsuarioAndCpfUsuario(dto.getEmailUsuario(), dto.getCpfUsuario());
+
+        if (usuarioBancoDeDados.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email ou CPF inválidos");
+        }
+
+        Usuario usuarioEditado = usuarioBancoDeDados.get();
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+        String senhaCriptografada = encoder.encode(dto.getNovaSenha());
+        usuarioEditado.setSenhaUsuario(senhaCriptografada);
+
+        usuarioRepository.save(usuarioEditado);
     }
 }

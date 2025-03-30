@@ -1,5 +1,6 @@
 package br.com.financehub.ApiFinanceHub.controller;
 
+import br.com.financehub.ApiFinanceHub.dto.AtualizarSenhaDTO;
 import br.com.financehub.ApiFinanceHub.dto.LoginDTO;
 import br.com.financehub.ApiFinanceHub.model.Usuario;
 import br.com.financehub.ApiFinanceHub.service.UsuarioService;
@@ -98,5 +99,10 @@ public class UsuarioController {
         usuarioService.autenticarLoginUsuario(loginDTO.getEmailUsuario(), loginDTO.getSenhaUsuario());
     }
 
-
+    @PatchMapping("/atualizar-senha-email-cpf")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Atualizar senha por Email e CPF", description = "Atualiza a senha do usuário validando o Email e CPF")
+    public void atualizarSenhaPorEmailCpf(@RequestBody AtualizarSenhaDTO atualizarSenhaDTO) {
+        usuarioService.atualizarSenhaPorEmailCpf(atualizarSenhaDTO);
+    }
 }
