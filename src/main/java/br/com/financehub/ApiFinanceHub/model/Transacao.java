@@ -3,10 +3,19 @@ package br.com.financehub.ApiFinanceHub.model;
 import br.com.financehub.ApiFinanceHub.enums.CategoriaTransacaoEnum;
 import br.com.financehub.ApiFinanceHub.enums.TipoTransacaoEnum;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+@Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "transacao")
 public class Transacao {
 
     @Id
@@ -23,9 +32,13 @@ public class Transacao {
     @Column(name = "valor_transacao", precision = 10, scale = 2, nullable = false)
     private BigDecimal valor;
 
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "data_criacao", nullable = false)
     private LocalDateTime dataCriacao;
 
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "data_modificacao", nullable = true)
     private LocalDateTime dataModificacao;
 
