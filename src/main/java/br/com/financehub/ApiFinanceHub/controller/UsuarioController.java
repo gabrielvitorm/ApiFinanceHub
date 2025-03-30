@@ -75,4 +75,18 @@ public class UsuarioController {
         usuarioService.atualizarUsuarioPorEmail(emailUsuario, usuario);
     }
 
+    @PatchMapping("/emails/{emailUsuario}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Atualizar email por Email", description = "Atualiza somente o email do usário pelo Email atual do usuário")
+    public void atualizarEmailPorEmail(@PathVariable String emailUsuario,@RequestBody Usuario usuario){
+        usuarioService.atualizarEmailPorEmail(emailUsuario, usuario);
+    }
+
+    @PatchMapping("/atualizar-senha/{emailUsuario}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Atualizar senha por Email", description = "Atualiza somente a senha do usário pelo Email atual do usuário")
+    public void atualizarSenhaPorEmail(@PathVariable String emailUsuario, @RequestBody Usuario usuario){
+        usuarioService.atualizarSenhaPorEmail(emailUsuario,usuario);
+    }
+
 }

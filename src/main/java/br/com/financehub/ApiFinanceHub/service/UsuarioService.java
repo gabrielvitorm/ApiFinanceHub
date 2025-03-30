@@ -101,4 +101,42 @@ import java.util.Optional;
 
         usuarioRepository.save(usuarioEditado);
     }
+
+    public void atualizarEmailPorEmail(String emailUsuario, Usuario usuario){
+        Optional<Usuario> usuarioBancoDeDados = findByEmailUsuario(emailUsuario);
+
+        if (usuarioBancoDeDados.isEmpty()){
+            throw new RuntimeException("Usuário não encontrado");
+        }
+
+        Usuario usuarioEditado = usuarioBancoDeDados.get();
+
+        Optional<Usuario> emailExistente = findByEmailUsuario(usuario.getEmailUsuario());
+        if (emailExistente.isPresent()){
+            throw new RuntimeException("Email já está em uso!");
+        }
+
+        usuarioEditado.setEmailUsuario(usuario.getEmailUsuario());
+
+        usuarioRepository.save(usuarioEditado);
+    }
+
+    public void atualizarSenhaPorEmail(String emailUsuario, Usuario usuario){
+        Optional<Usuario> usuarioBancoDeDados = findByEmailUsuario(emailUsuario);
+
+        if (usuarioBancoDeDados.isEmpty()){
+            throw new RuntimeException("Usuário não encontrado!");
+        }
+
+        Usuario usuarioEditado = usuarioBancoDeDados.get();
+
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String senhaCriptografada = encoder.encode(usuario.getSenhaUsuario());
+
+        usuarioEditado.setSenhaUsuario(senhaCriptografada);
+
+        usuarioRepository.save(usuarioEditado);
+    }
+
+
 }
