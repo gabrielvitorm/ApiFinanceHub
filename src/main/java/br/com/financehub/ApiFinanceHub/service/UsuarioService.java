@@ -3,8 +3,10 @@ package br.com.financehub.ApiFinanceHub.service;
 import br.com.financehub.ApiFinanceHub.model.Usuario;
 import br.com.financehub.ApiFinanceHub.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -138,5 +140,20 @@ import java.util.Optional;
         usuarioRepository.save(usuarioEditado);
     }
 
+    public Usuario autenticarLoginUsuario(String emailUsuario, String senhaUsuario){
+        Optional<Usuario> usuarioBancoDeDados = findByEmailUsuario(emailUsuario);
 
+        if (usuarioBancoDeDados.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Credenciais inválidas");
+        }
+
+        Usuario usuarioAutenticado = usuarioBancoDeDados.get();
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+        if (!encoder.matches(senhaUsuario, usuarioAutenticado.getSenhaUsuario())){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Credenciais inválidas");
+        }
+
+        return usuarioAutenticado;
+    }
 }

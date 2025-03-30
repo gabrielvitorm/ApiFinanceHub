@@ -1,11 +1,13 @@
 package br.com.financehub.ApiFinanceHub.controller;
 
+import br.com.financehub.ApiFinanceHub.dto.LoginDTO;
 import br.com.financehub.ApiFinanceHub.model.Usuario;
 import br.com.financehub.ApiFinanceHub.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -88,5 +90,13 @@ public class UsuarioController {
     public void atualizarSenhaPorEmail(@PathVariable String emailUsuario, @RequestBody Usuario usuario){
         usuarioService.atualizarSenhaPorEmail(emailUsuario,usuario);
     }
+
+    @PostMapping("/login")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Login Usuário", description = "Autenticação de login do usuário do sistema, através do email e da senha")
+    public void autenticarLoginUsuario(@RequestBody LoginDTO loginDTO){
+        usuarioService.autenticarLoginUsuario(loginDTO.getEmailUsuario(), loginDTO.getSenhaUsuario());
+    }
+
 
 }
