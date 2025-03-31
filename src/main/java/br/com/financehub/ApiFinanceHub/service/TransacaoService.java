@@ -1,5 +1,6 @@
 package br.com.financehub.ApiFinanceHub.service;
 
+import br.com.financehub.ApiFinanceHub.enums.CategoriaTransacaoEnum;
 import br.com.financehub.ApiFinanceHub.model.Transacao;
 import br.com.financehub.ApiFinanceHub.repository.TransacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,4 +26,9 @@ public class TransacaoService {
     public Optional<Transacao> listarTransacaoPorId(Long idTransacao){
         return transacaoRepository.findById(idTransacao);
     }
+
+    public List<Transacao> listarPorCategoria(CategoriaTransacaoEnum tipoCategoria) {
+        return transacaoRepository.findByCategoria(tipoCategoria);
+    }
+
 }
