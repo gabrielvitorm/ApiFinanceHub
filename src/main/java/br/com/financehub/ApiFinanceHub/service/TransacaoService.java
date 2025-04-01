@@ -27,8 +27,8 @@ public class TransacaoService {
         return transacaoRepository.findById(idTransacao);
     }
 
-    public List<Transacao> listarPorCategoria(CategoriaTransacaoEnum tipoCategoria) {
-        return transacaoRepository.findByCategoria(tipoCategoria);
+    public Optional<Transacao> listarPorTipoCategoria(CategoriaTransacaoEnum tipoCategoria) {
+        return transacaoRepository.findByTipoCategoria(tipoCategoria);
     }
 
 }

@@ -41,11 +41,11 @@ public class TransacaoController {
         return transacaoService.listarTransacaoPorId(idTransacao);
     }
 
-    @GetMapping("/por-categoria")
+    @GetMapping("{tipoCategoria}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Listar Categorias", description = "Endpoint para listar por categorias")
-    public List<Transacao> listarPorCategoria(@RequestParam CategoriaTransacaoEnum tipoCategoria) {
-        return transacaoService.listarPorCategoria(tipoCategoria);
+    public Optional<Transacao> listarPorTipoCategoria(@PathVariable CategoriaTransacaoEnum tipoCategoria) {
+        return transacaoService.listarPorTipoCategoria(tipoCategoria);
     }
 
 }
