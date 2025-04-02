@@ -1,7 +1,9 @@
 package br.com.financehub.ApiFinanceHub.service;
 
 import br.com.financehub.ApiFinanceHub.model.Transacao;
+import br.com.financehub.ApiFinanceHub.model.Usuario;
 import br.com.financehub.ApiFinanceHub.repository.TransacaoRepository;
+import br.com.financehub.ApiFinanceHub.repository.UsuarioRepository;
 import com.itextpdf.io.source.ByteArrayOutputStream;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
@@ -24,8 +26,19 @@ public class ExportacaoService {
     @Autowired
     TransacaoRepository transacaoRepository;
 
+    @Autowired
+    UsuarioRepository usuarioRepository;
+
     public byte[] exportarTransacaoParaPdf(Long idUsuario, LocalDateTime dataInicio, LocalDateTime dataFim){
         List<Transacao> transacoes = transacaoRepository.findByUsuarioIdUsuarioAndDataCriacaoBetween(idUsuario, dataInicio, dataFim);
+
+        Optional<Usuario> usuarioBancoDeDados = usuarioRepository.findById(idUsuario);
+
+        if (usuarioBancoDeDados.isEmpty()){
+            throw new RuntimeException("Usuário não existe!");
+        }
+
+        Usuario usuarioExistente = usuarioBancoDeDados.get();
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
@@ -33,23 +46,31 @@ public class ExportacaoService {
              Document document = new Document(pdfDoc)) {
 
             document.add(new Paragraph("Relatório de Transações"));
-            document.add(new Paragraph("Usuário ID: " + idUsuario));
+            document.add(new Paragraph("Id: " + idUsuario));
+            document.add(new Paragraph("Nome: " + usuarioExistente.getNomeUsuario()));
+            document.add(new Paragraph("Email: " + usuarioExistente.getEmailUsuario()));
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
             document.add(new Paragraph("Período: " + dataInicio.format(formatter) + " até " + dataFim.format(formatter)));
 
-            Table table = new Table(4);
-            table.addCell("ID");
+            Table table = new Table(7);
+            table.addCell("ID Transação");
+            table.addCell("Nome");
             table.addCell("Descrição");
             table.addCell("Valor");
+            table.addCell("Categoria");
+            table.addCell("Tipo");
             table.addCell("Data");
 
             if (transacoes.isEmpty()) {
                 document.add(new Paragraph("Nenhuma transação encontrada."));
             } else {
                 for (Transacao transacao : transacoes) {
-                    table.addCell(String.valueOf(transacao.getUsuario().getIdUsuario()));
+                    table.addCell(String.valueOf(transacao.getIdTransacao()));
+                    table.addCell(String.valueOf(transacao.getNomeTransaca()));
                     table.addCell(transacao.getDescricaoTransacao());
                     table.addCell(String.valueOf(transacao.getValor()));
+                    table.addCell(String.valueOf(transacao.getTipoCategoria()));
+                    table.addCell(String.valueOf(transacao.getTipoTransacao()));
                     table.addCell(transacao.getDataCriacao().format(formatter));
                 }
             }
