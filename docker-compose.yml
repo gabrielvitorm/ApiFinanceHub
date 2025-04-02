@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: finance_hub_2025
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: finance_hub_2025
+    ports:
+      - "5438:5432"
+    networks:
+      - finance_hub_network
+    restart: unless-stopped
+
+  cloudbeaver:
+    image: dbeaver/cloudbeaver:latest
+    container_name: dbeaver_finance_hub
+    depends_on:
+      - postgres
+    ports:
+      - "15438:8978"
+    networks:
+      - finance_hub_network
+    restart: unless-stopped
+
+networks:
+  finance_hub_network:
+    driver: bridge
