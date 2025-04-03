@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -25,9 +26,6 @@ public class Orcamento {
     @Column(name = "limite_orcamento",precision = 10, scale = 2, nullable = false)
     private BigDecimal limiteOrcamento;
 
-    @Column(name = "meta_economia", precision = 10, scale = 2)
-    private BigDecimal metaEconomia;
-
     @Column(name = "mes_referencia", nullable = false)
     private LocalDate mesReferencia;
 
@@ -39,4 +37,12 @@ public class Orcamento {
     @ManyToOne
     @JoinColumn(name = "USUARIO_id_usuario", nullable = false)
     private Usuario usuario;
+
+    @OneToMany
+    @JoinColumn(name = "ALERTAORCAMENTO_id_alerta_orcamento")
+    private List<AlertaOrcamento> alertas;
+
+    @OneToMany
+    @JoinColumn(name = "TRANSACAO_id_transacao")
+    private List<Transacao> transacoes;
 }

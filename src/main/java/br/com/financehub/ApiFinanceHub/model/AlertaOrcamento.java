@@ -34,7 +34,7 @@ public class AlertaOrcamento {
     @Column(name = "data_alerta_gerado", nullable = false, updatable = false)
     private LocalDateTime dataAlertaGerado;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORCAMENTO_id_orcamento", nullable = false)
     private Orcamento orcamento;
 }
