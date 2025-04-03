@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -20,25 +22,21 @@ public class Orcamento {
     @Column(name = "id_orcamento", nullable = false)
     private Long idOrcamento;
 
-    @Column(name = "usuario_id", nullable = false)
-    private Long usuarioId;
+    @Column(name = "limite_orcamento",precision = 10, scale = 2, nullable = false)
+    private BigDecimal limiteOrcamento;
 
-    @Column(name = "limite_mensal", nullable = false)
-    private double limiteMensal;
+    @Column(name = "meta_economia", precision = 10, scale = 2)
+    private BigDecimal metaEconomia;
 
-    @Column(name = "gasto_atual", nullable = false)
-    private double gastoAtual;
-
-    @Column(name = "meta_economia")
-    private Double metaEconomia;
+    @Column(name = "mes_referencia", nullable = false)
+    private LocalDate mesReferencia;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "data_criacao", nullable = false, updatable = false)
-    private LocalDateTime dataCriacao;
+    private LocalDateTime dataCriacao;]
 
-    @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "data_modificacao", updatable = false)
-    private LocalDateTime dataModificacao;
+    @ManyToOne
+    @JoinColumn(name = "USUARIO_id_usuario")
+    private Long usuarioId;
 }

@@ -19,12 +19,12 @@ public class OrcamentoService {
     @PostMapping("/definir")
     public Orcamento definirOrcamentoMensal(@RequestParam Long usuarioId, @RequestParam double limiteMensal) {
         Optional<Orcamento> orcamentoExistente = orcamentoRepository.findByUsuarioId(usuarioId);
-
+        
         Orcamento orcamento = orcamentoExistente.orElse(new Orcamento());
         orcamento.setUsuarioId(usuarioId);
         orcamento.setLimiteMensal(limiteMensal);
         orcamento.setGastoAtual(0);
-
+        
         return orcamentoRepository.save(orcamento);
     }
 
@@ -32,14 +32,14 @@ public class OrcamentoService {
     public void registrarGasto(@RequestParam Long usuarioId, @RequestParam double valorGasto) {
         Orcamento orcamento = orcamentoRepository.findByUsuarioId(usuarioId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Orçamento não encontrado!"));
-
+        
         double novoGasto = orcamento.getGastoAtual() + valorGasto;
         orcamento.setGastoAtual(novoGasto);
-
+        
         if (novoGasto >= orcamento.getLimiteMensal() * 0.8) {
             System.out.println("Atenção: Você atingiu 80% do seu orçamento mensal!");
         }
-
+        
         orcamentoRepository.save(orcamento);
     }
 
@@ -47,7 +47,7 @@ public class OrcamentoService {
     public Orcamento definirMetaFinanceira(@RequestParam Long usuarioId, @RequestParam double metaEconomia) {
         Orcamento orcamento = orcamentoRepository.findByUsuarioId(usuarioId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Orçamento não encontrado!"));
-
+        
         orcamento.setMetaEconomia(metaEconomia);
         return orcamentoRepository.save(orcamento);
     }
@@ -56,7 +56,7 @@ public class OrcamentoService {
     public String sugerirCortesDeGastos(@RequestParam Long usuarioId) {
         Orcamento orcamento = orcamentoRepository.findByUsuarioId(usuarioId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Orçamento não encontrado!"));
-
+        
         if (orcamento.getGastoAtual() > orcamento.getLimiteMensal() * 0.8) {
             return "Sugestão: Considere reduzir gastos com lazer e refeições fora de casa.";
         }
@@ -67,7 +67,7 @@ public class OrcamentoService {
     public void excluirOrcamento(@RequestParam Long usuarioId) {
         Orcamento orcamento = orcamentoRepository.findByUsuarioId(usuarioId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Orçamento não encontrado!"));
-
+        
         orcamentoRepository.delete(orcamento);
     }
 }
