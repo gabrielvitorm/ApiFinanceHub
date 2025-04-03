@@ -34,7 +34,7 @@ public class Orcamento {
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "data_criacao", nullable = false, updatable = false)
-    private LocalDateTime dataCriacao;]
+    private LocalDateTime dataCriacao;
 
     @ManyToOne
     @JoinColumn(name = "USUARIO_id_usuario", nullable = false)
