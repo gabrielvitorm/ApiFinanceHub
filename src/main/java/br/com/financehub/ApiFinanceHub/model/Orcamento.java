@@ -37,6 +37,10 @@ public class Orcamento {
     private LocalDateTime dataCriacao;]
 
     @ManyToOne
-    @JoinColumn(name = "USUARIO_id_usuario")
-    private Long usuarioId;
+    @JoinColumn(name = "USUARIO_id_usuario", nullable = false)
+    private Usuario usuario;
+
+    @OneToMany
+    @JoinColumn(name = "ALERTAORCAMENTO_id_alertar_orcamento", nullable = false)
+    private AlertaOrcamento alertaOrcamento;
 }
