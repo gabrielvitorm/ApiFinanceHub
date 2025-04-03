@@ -9,5 +9,7 @@ public enum CategoriaTransacaoEnum {
     EDUCACAO,
     LAZER,
     INVESTIMENTOS,
-    OUTROS
+    OUTROS,
+    FIXO,
+    FREELANCER
 }

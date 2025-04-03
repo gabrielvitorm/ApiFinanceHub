@@ -37,8 +37,6 @@ public class Transacao {
     @Column(name = "data_criacao", nullable = false)
     private LocalDateTime dataCriacao;
 
-    @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "data_modificacao", nullable = true)
     private LocalDateTime dataModificacao;
 

@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,7 +79,7 @@ import java.util.Optional;
         usuarioEditado.setEmailUsuario(usuario.getEmailUsuario());
         usuarioEditado.setCpfUsuario(usuario.getCpfUsuario());
         usuarioEditado.setSenhaUsuario(senhaCriptografada);
-        usuarioEditado.setDataModificacao(usuario.getDataModificacao());
+        usuarioEditado.setDataModificacao(LocalDateTime.now());
 
         usuarioRepository.save(usuarioEditado);
     }
@@ -100,7 +101,7 @@ import java.util.Optional;
         usuarioEditado.setEmailUsuario(usuario.getEmailUsuario());
         usuarioEditado.setCpfUsuario(usuario.getCpfUsuario());
         usuarioEditado.setSenhaUsuario(senhaCriptografada);
-        usuarioEditado.setDataModificacao(usuario.getDataModificacao());
+        usuarioEditado.setDataModificacao(LocalDateTime.now());
 
         usuarioRepository.save(usuarioEditado);
     }
@@ -120,6 +121,7 @@ import java.util.Optional;
         }
 
         usuarioEditado.setEmailUsuario(usuario.getEmailUsuario());
+        usuarioEditado.setDataModificacao(LocalDateTime.now());
 
         usuarioRepository.save(usuarioEditado);
     }
@@ -137,6 +139,7 @@ import java.util.Optional;
         String senhaCriptografada = encoder.encode(usuario.getSenhaUsuario());
 
         usuarioEditado.setSenhaUsuario(senhaCriptografada);
+        usuarioEditado.setDataModificacao(LocalDateTime.now());
 
         usuarioRepository.save(usuarioEditado);
     }
@@ -170,6 +173,7 @@ import java.util.Optional;
 
         String senhaCriptografada = encoder.encode(dto.getNovaSenha());
         usuarioEditado.setSenhaUsuario(senhaCriptografada);
+        usuarioEditado.setDataModificacao(LocalDateTime.now());
 
         usuarioRepository.save(usuarioEditado);
     }

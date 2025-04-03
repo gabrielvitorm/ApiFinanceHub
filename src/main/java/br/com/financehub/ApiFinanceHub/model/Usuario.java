@@ -37,8 +37,7 @@ public class Usuario {
     @Column(name = "data_criacao_usuario", nullable = false, updatable = false)
     private LocalDateTime dataCriacao;
 
-    @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "data_modificacao_usuario", updatable = false)
+    @Column(name = "data_modificacao_usuario", nullable = true, updatable = true)
     private LocalDateTime dataModificacao;
 }
