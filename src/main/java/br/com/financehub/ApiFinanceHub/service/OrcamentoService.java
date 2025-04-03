@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -51,5 +52,19 @@ public class OrcamentoService {
         orcamento.setDataCriacao(LocalDateTime.now());
 
         return orcamentoRepository.save(orcamento);
+    }
+
+    public List<Orcamento> listarOrcamentosPorUsuario(Long idUsuario, LocalDate mesReferencia){
+        Optional<Usuario> usuarioBancoDeDados = usuarioService.listarUsuarioPorId(idUsuario);
+
+        if (usuarioBancoDeDados.isEmpty()){
+            throw new RuntimeException("Usuário não encontrado");
+        }
+
+        if (mesReferencia != null){
+            return orcamentoRepository.findAllByUsuarioIdUsuarioAndMesReferencia(idUsuario, mesReferencia);
+        }else {
+            return orcamentoRepository.findByUsuarioIdUsuario(idUsuario);
+        }
     }
 }
