@@ -37,4 +37,11 @@ public class OrcamentoController {
     public List<Orcamento> listarOrcamentosPorUsuario(@PathVariable Long idUsuario, @RequestParam(required = false)LocalDate mesReferencia){
         return orcamentoService.listarOrcamentosPorUsuario(idUsuario, mesReferencia);
     }
+
+    @GetMapping("/{idOrcamento}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Lista Orçamento por Id", description = "Lista os orçamento pelo Id so orçamento")
+    public Optional<Orcamento> listarOrcamentoPorId(@PathVariable Long idOrcamento){
+        return orcamentoService.listarOrcamentoPorId(idOrcamento);
+    }
 }

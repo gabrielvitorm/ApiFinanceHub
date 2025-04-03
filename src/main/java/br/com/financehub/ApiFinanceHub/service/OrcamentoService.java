@@ -67,4 +67,13 @@ public class OrcamentoService {
             return orcamentoRepository.findByUsuarioIdUsuario(idUsuario);
         }
     }
+
+    public Optional<Orcamento> listarOrcamentoPorId(Long idOrcamento){
+        Optional<Orcamento> orcamentoBancoDeDados = orcamentoRepository.findById(idOrcamento);
+        if (orcamentoBancoDeDados.isEmpty()){
+            throw new RuntimeException("Orçamento não encontrado!");
+        }
+
+        return orcamentoRepository.findById(idOrcamento);
+    }
 }
