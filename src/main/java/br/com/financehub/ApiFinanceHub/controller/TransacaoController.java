@@ -1,5 +1,6 @@
 package br.com.financehub.ApiFinanceHub.controller;
 
+import br.com.financehub.ApiFinanceHub.enums.CategoriaTransacaoEnum;
 import br.com.financehub.ApiFinanceHub.model.Transacao;
 import br.com.financehub.ApiFinanceHub.service.TransacaoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,4 +40,12 @@ public class TransacaoController {
     public Optional<Transacao> listarTransacaoPorId(@PathVariable Long idTransacao){
         return transacaoService.listarTransacaoPorId(idTransacao);
     }
+
+    @GetMapping("{tipoCategoria}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Listar Categorias", description = "Endpoint para listar por categorias")
+    public Optional<Transacao> listarPorTipoCategoria(@PathVariable CategoriaTransacaoEnum tipoCategoria) {
+        return transacaoService.listarPorTipoCategoria(tipoCategoria);
+    }
+
 }
