@@ -76,4 +76,13 @@ public class OrcamentoService {
 
         return orcamentoRepository.findById(idOrcamento);
     }
+
+    public void deletarOrcamentoPorId(Long idOrcamento){
+        Optional<Orcamento> orcamentoBancoDeDados = orcamentoRepository.findById(idOrcamento);
+        if (orcamentoBancoDeDados.isEmpty()){
+            throw new RuntimeException("Orçamento não encontrado!");
+        }
+
+        orcamentoRepository.deleteById(idOrcamento);
+    }
 }

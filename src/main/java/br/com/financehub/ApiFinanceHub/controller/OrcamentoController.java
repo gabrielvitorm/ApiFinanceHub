@@ -44,4 +44,11 @@ public class OrcamentoController {
     public Optional<Orcamento> listarOrcamentoPorId(@PathVariable Long idOrcamento){
         return orcamentoService.listarOrcamentoPorId(idOrcamento);
     }
+
+    @DeleteMapping("/{idOrcamento}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Deletar Orçamento por Id", description = "Faz a deletação do orçamento pelo Id do Orçamento")
+    public void deletarOrcamentoPorId(@PathVariable Long idOrcamento){
+        orcamentoService.deletarOrcamentoPorId(idOrcamento);
+    }
 }
