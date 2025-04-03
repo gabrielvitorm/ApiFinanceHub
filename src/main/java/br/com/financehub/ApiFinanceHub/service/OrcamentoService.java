@@ -85,4 +85,18 @@ public class OrcamentoService {
 
         orcamentoRepository.deleteById(idOrcamento);
     }
+
+    public void atualizarOrcamentoPorId(Orcamento orcamento, Long idOrcamento){
+        Optional<Orcamento> orcamentoBancoDeDados = orcamentoRepository.findById(idOrcamento);
+        if (orcamentoBancoDeDados.isEmpty()){
+            throw new RuntimeException("Orçamento não encontrado");
+        }
+
+        Orcamento orcamentoEditado = orcamentoBancoDeDados.get();
+
+        orcamentoEditado.setLimiteOrcamento(orcamento.getLimiteOrcamento());
+        orcamentoEditado.setMesReferencia(orcamento.getMesReferencia());
+
+        orcamentoRepository.save(orcamentoEditado);
+    }
 }

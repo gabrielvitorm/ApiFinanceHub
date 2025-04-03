@@ -51,4 +51,11 @@ public class OrcamentoController {
     public void deletarOrcamentoPorId(@PathVariable Long idOrcamento){
         orcamentoService.deletarOrcamentoPorId(idOrcamento);
     }
+
+    @PutMapping("/atualizar/{idOrcamento}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Atualizar Orçamento", description = "Atualizar o limite definido e o mês de referência")
+    public void atualizarOrcamentoPorId(@RequestBody Orcamento orcamento, @PathVariable Long idOrcamento){
+        orcamentoService.atualizarOrcamentoPorId(orcamento, idOrcamento);
+    }
 }
