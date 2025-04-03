@@ -39,8 +39,4 @@ public class Orcamento {
     @ManyToOne
     @JoinColumn(name = "USUARIO_id_usuario", nullable = false)
     private Usuario usuario;
-
-    @OneToMany
-    @JoinColumn(name = "ALERTAORCAMENTO_id_alertar_orcamento", nullable = false)
-    private AlertaOrcamento alertaOrcamento;
 }
