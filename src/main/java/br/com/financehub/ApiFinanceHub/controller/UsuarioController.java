@@ -11,11 +11,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/usuarios")
+@RequestMapping("/api/usuarios")
 @Tag(name = "Usuários", description = "Endpoints para gerenciamento de usuários")
 public class UsuarioController {
 
@@ -95,8 +97,12 @@ public class UsuarioController {
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Login Usuário", description = "Autenticação de login do usuário do sistema, através do email e da senha")
-    public void autenticarLoginUsuario(@RequestBody LoginDTO loginDTO){
+    public ResponseEntity<Map<String, String>> autenticarLoginUsuario(@RequestBody LoginDTO loginDTO) {
         usuarioService.autenticarLoginUsuario(loginDTO.getEmailUsuario(), loginDTO.getSenhaUsuario());
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Login realizado com sucesso");
+        response.put("email", loginDTO.getEmailUsuario());
+        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/atualizar-senha-email-cpf")

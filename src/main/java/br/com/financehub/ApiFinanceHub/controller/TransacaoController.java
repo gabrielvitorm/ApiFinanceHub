@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/transacoes")
+@RequestMapping("/api/transacoes")
 @Tag(name = "Transações", description = "Endpoints para gerenciamento de transações")
 public class TransacaoController {
 
