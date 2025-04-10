@@ -54,4 +54,11 @@ public class TransacaoController {
     public void deletarTransacaoPorId(@PathVariable Long idTransacao) {
         transacaoService.deletarTransacaoPorId(idTransacao);
     }
+
+    @PutMapping("/id/{idTransacao}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Atualizar transação por Id", description = "Atualiza todos os dados da Transação pelo Id da Transação")
+    public void atualizarTransacaoPorId(@PathVariable Long idTransacao, @RequestBody Transacao transacao) {
+        transacaoService.atualizarTransacaoPorId(idTransacao, transacao);
+    }
 }
