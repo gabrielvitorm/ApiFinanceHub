@@ -1,6 +1,7 @@
 package br.com.financehub.ApiFinanceHub.service;
 
 import br.com.financehub.ApiFinanceHub.enums.CategoriaTransacaoEnum;
+import br.com.financehub.ApiFinanceHub.enums.TipoTransacaoEnum;
 import br.com.financehub.ApiFinanceHub.model.Transacao;
 import br.com.financehub.ApiFinanceHub.model.Usuario;
 import br.com.financehub.ApiFinanceHub.repository.TransacaoRepository;
@@ -31,6 +32,10 @@ public class TransacaoService {
 
     public Optional<Transacao> listarPorTipoCategoria(CategoriaTransacaoEnum tipoCategoria) {
         return transacaoRepository.findByTipoCategoria(tipoCategoria);
+    }
+
+    public List<Transacao> listarTransacaoPorTipo(TipoTransacaoEnum tipoTransacao) {
+        return transacaoRepository.findAllByTipoTransacao(tipoTransacao);
     }
 
     public void deletarTransacaoPorId(Long idTransacao){
