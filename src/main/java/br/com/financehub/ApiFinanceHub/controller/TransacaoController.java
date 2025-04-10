@@ -34,7 +34,7 @@ public class TransacaoController {
         return transacaoService.listarTodasTransacoes();
     }
 
-    @GetMapping("/{idTransacao}")
+    @GetMapping("/id/{idTransacao}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Listar Transação por Id", description = "Endpoint para listar as transações por Id")
     public Optional<Transacao> listarTransacaoPorId(@PathVariable Long idTransacao){
@@ -48,4 +48,10 @@ public class TransacaoController {
         return transacaoService.listarPorTipoCategoria(tipoCategoria);
     }
 
+    @DeleteMapping("/id/{idTransacao}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Deletar transação por Id", description = "Deleta a transação pelo Id da transação")
+    public void deletarTransacaoPorId(@PathVariable Long idTransacao) {
+        transacaoService.deletarTransacaoPorId(idTransacao);
+    }
 }

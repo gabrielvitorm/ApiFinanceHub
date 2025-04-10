@@ -31,4 +31,11 @@ public class TransacaoService {
         return transacaoRepository.findByTipoCategoria(tipoCategoria);
     }
 
+    public void deletarTransacaoPorId(Long idTransacao){
+        if (transacaoRepository.existsById(idTransacao)){
+            transacaoRepository.deleteById(idTransacao);
+        }else {
+            throw new RuntimeException("Transação não encontrada!");
+        }
+    }
 }
