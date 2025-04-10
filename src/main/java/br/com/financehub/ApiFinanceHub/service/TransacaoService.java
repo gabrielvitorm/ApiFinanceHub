@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,7 +60,7 @@ public class TransacaoService {
         trasacaoEditado.setValor(transacao.getValor());
         trasacaoEditado.setTipoTransacao(transacao.getTipoTransacao());
         trasacaoEditado.setTipoCategoria(transacao.getTipoCategoria());
-        trasacaoEditado.setDataModificacao(transacao.getDataModificacao());
+        trasacaoEditado.setDataModificacao(LocalDateTime.now());
 
         transacaoRepository.save(trasacaoEditado);
     }
