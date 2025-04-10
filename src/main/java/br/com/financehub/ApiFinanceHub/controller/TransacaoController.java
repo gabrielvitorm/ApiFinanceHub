@@ -58,14 +58,14 @@ public class TransacaoController {
 
     @DeleteMapping("/id/{idTransacao}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Operation(summary = "Deletar transação por Id", description = "Deleta a transação pelo Id da transação")
+    @Operation(summary = "Deletar transação por Id", description = "Endpoint para deleta a transação pelo Id da transação")
     public void deletarTransacaoPorId(@PathVariable Long idTransacao) {
         transacaoService.deletarTransacaoPorId(idTransacao);
     }
 
     @PutMapping("/id/{idTransacao}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Operation(summary = "Atualizar transação por Id", description = "Atualiza todos os dados da Transação pelo Id da Transação")
+    @Operation(summary = "Atualizar transação por Id", description = "Endpoint para atualiza todos os dados da Transação pelo Id da Transação")
     public void atualizarTransacaoPorId(@PathVariable Long idTransacao, @RequestBody Transacao transacao) {
         transacaoService.atualizarTransacaoPorId(idTransacao, transacao);
     }
