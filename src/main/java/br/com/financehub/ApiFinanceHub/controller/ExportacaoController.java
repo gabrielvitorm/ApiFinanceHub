@@ -21,7 +21,7 @@ public class ExportacaoController {
     private ExportacaoService exportacaoService;
 
     @Operation(summary = "Endpoint que retorna relatório", description = "Retorna o relatório em PDF de acordo com a data selecionada pelo usuário")
-    @GetMapping("/exportar/pdf")
+    @PostMapping("/exportar/pdf")
     public ResponseEntity<byte[]> exportarTransacoesParaPdf(@RequestBody ExportacaoPdfDTO exportacaoPdfDTO) {
 
         byte[] pdfBytes = exportacaoService.exportarTransacaoParaPdf(exportacaoPdfDTO.getIdUsuario(), exportacaoPdfDTO.getDataInicio(), exportacaoPdfDTO.getDataFim());
