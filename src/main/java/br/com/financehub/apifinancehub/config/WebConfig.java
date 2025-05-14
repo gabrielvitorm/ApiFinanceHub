@@ -12,7 +12,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .addMapping("/**")
                 .allowedOrigins(
                         "http://localhost:5173",
-                        "https://financehub-frontend-dev.vercel.app/"
+                        "https://financehub-frontend-dev.vercel.app"  // sem barra no final
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
                 .allowedHeaders("*")

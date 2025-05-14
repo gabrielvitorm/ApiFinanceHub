@@ -29,16 +29,12 @@ public class SecurityConfig {
         return authConfig.getAuthenticationManager();
     }
 
-    // Configuração de CORS “genérica”
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();
 
-        // lista de domínios permitidos
-        cfg.setAllowedOrigins(List.of(
-                "http://localhost:5173",
-                "https://financehub-frontend-dev.vercel.app/"
-        ));
+        // Permite qualquer origem (coringa) mesmo com allowCredentials=true
+        cfg.setAllowedOriginPatterns(List.of("*"));
         cfg.setAllowedMethods(List.of("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
         cfg.setAllowedHeaders(List.of("*"));
         cfg.setAllowCredentials(true);
@@ -47,6 +43,7 @@ public class SecurityConfig {
         src.registerCorsConfiguration("/**", cfg);
         return src;
     }
+
 
 
     @Bean
