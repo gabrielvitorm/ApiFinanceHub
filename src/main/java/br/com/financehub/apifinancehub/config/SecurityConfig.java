@@ -22,20 +22,16 @@ public class SecurityConfig {
     @Autowired
     private JwtFilter jwtFilter;
 
-    // disponibiliza o AuthenticationManager para o AuthController
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+    AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
-    // configura CORS de forma compatível com allowCredentials=true
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();
-
-        // permite qualquer origem (curinga), mas agora via patterns
-        cfg.setAllowedOriginPatterns(List.of("*"));
-        cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        cfg.setAllowedOriginPatterns(List.of("*"));                // curingas para dev e prod
+        cfg.setAllowedMethods(List.of("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
         cfg.setAllowedHeaders(List.of("*"));
         cfg.setAllowCredentials(true);
 
@@ -45,21 +41,24 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors()                             // usa nosso CorsConfigurationSource()
-                .and()
-                .csrf().disable()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
+                .cors().and()                                               // aplica o CORS acima
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        // 1) libera TODO auth/* (login, refresh, logout, etc)
+                        .requestMatchers("/auth/**").permitAll()
+
+                        // 2) libera criação de usuário público
                         .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll()
+
                         .requestMatchers(HttpMethod.GET,  "/api/usuarios").permitAll()
+
+                        // 3) qualquer outra rota exige JWT
                         .anyRequest().authenticated()
                 )
-
+                // 4) aplica nosso filtro JWT antes do UsernamePasswordAuthenticationFilter
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
