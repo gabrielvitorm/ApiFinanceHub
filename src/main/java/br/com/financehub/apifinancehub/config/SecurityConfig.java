@@ -1,66 +1,73 @@
 package br.com.financehub.apifinancehub.config;
 
 import br.com.financehub.apifinancehub.security.JwtFilter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.*;
+import br.com.financehub.apifinancehub.repository.UsuarioRepository;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.authentication.*;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.*;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.core.userdetails.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.*;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.*;
-
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private JwtFilter jwtFilter;
-
+    // 1) Como o Spring vai comparar sua senha raw com o hash no banco:
     @Bean
-    AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
+    // 2) UserDetailsService: transforma seu Usuario → UserDetails
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration cfg = new CorsConfiguration();
-        cfg.setAllowedOriginPatterns(List.of("*"));                // curingas para dev e prod
-        cfg.setAllowedMethods(List.of("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
-        cfg.setAllowedHeaders(List.of("*"));
-        cfg.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource src = new UrlBasedCorsConfigurationSource();
-        src.registerCorsConfiguration("/**", cfg);
-        return src;
+    public UserDetailsService userDetailsService(UsuarioRepository repo) {
+        return username -> repo.findByEmailUsuario(username)
+                .map(u -> User.withUsername(u.getEmailUsuario())
+                        .password(u.getSenhaUsuario())
+                        .authorities("USER")  // ou pegue roles do seu modelo
+                        .build()
+                )
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
     }
 
+    // 3) AuthenticationManager pra poder injetar no AuthController
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public AuthenticationManager authenticationManager(
+            HttpSecurity http,
+            PasswordEncoder passwordEncoder,
+            UserDetailsService userDetailsService
+    ) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder)
+                .and()
+                .build();
+    }
+
+    // 4) Filtro de segurança HTTP + JWT
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtFilter jwtFilter) throws Exception {
         http
-                .cors().and()                                               // aplica o CORS acima
-                .csrf(csrf -> csrf.disable())
-                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .csrf().disable()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                 .authorizeHttpRequests(auth -> auth
-                        // 1) libera TODO auth/* (login, refresh, logout, etc)
-                        .requestMatchers("/auth/**").permitAll()
-
-                        // 2) libera criação de usuário público
-                        .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll()
-
-                        .requestMatchers(HttpMethod.GET,  "/api/usuarios").permitAll()
-
-                        // 3) qualquer outra rota exige JWT
+                        // libera login e cadastro
+                        .requestMatchers(HttpMethod.POST, "/auth/**", "/api/usuarios").permitAll()
+                        // todo o resto exige token
                         .anyRequest().authenticated()
                 )
-                // 4) aplica nosso filtro JWT antes do UsernamePasswordAuthenticationFilter
+                // joga seu filtro JWT antes do UsernamePasswordAuthenticationFilter
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 }

@@ -16,30 +16,21 @@ import java.util.Map;
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    private AuthenticationManager authManager;
-
-    @Autowired
-    private JwtUtil jwtUtil;
+    @Autowired AuthenticationManager authManager;
+    @Autowired JwtUtil jwtUtil;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<?> login(@RequestBody LoginDTO login) {
         try {
-            // 1) autentica usuário
-            Authentication auth = new UsernamePasswordAuthenticationToken(
-                    loginDTO.getEmailUsuario(),
-                    loginDTO.getSenhaUsuario()
+            authManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            login.getEmailUsuario(),
+                            login.getSenhaUsuario()
+                    )
             );
-            authManager.authenticate(auth);
-
-            // 2) gera JWT
-            String token = jwtUtil.generateToken(loginDTO.getEmailUsuario());
-
-            // 3) retorna token num JSON
+            String token = jwtUtil.generateToken(login.getEmailUsuario());
             return ResponseEntity.ok(Map.of("token", token));
-
-        } catch (AuthenticationException ex) {
-            // 4) em caso de falha, retorna 401 com mensagem padronizada
+        } catch (AuthenticationException e) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "Credenciais inválidas"));
