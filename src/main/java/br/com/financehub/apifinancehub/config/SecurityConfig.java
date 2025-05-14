@@ -23,16 +23,16 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // 1) Password encoder para comparar raw ↔ hash Bcrypt
+    // 1) PasswordEncoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // 2) Converte seu Usuario (do banco) em UserDetails para o Spring Security
+    // 2) UserDetailsService
     @Bean
     public UserDetailsService userDetailsService(UsuarioRepository repo) {
-        return username -> repo.findByEmailUsuario(username)
+        return email -> repo.findByEmailUsuario(email)
                 .map(u -> User.withUsername(u.getEmailUsuario())
                         .password(u.getSenhaUsuario())
                         .authorities("USER")
@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
     }
 
-    // 3) AuthenticationManager para injeção em AuthController
+    // 3) AuthenticationManager
     @Bean
     public AuthenticationManager authenticationManager(
             HttpSecurity http,
@@ -54,14 +54,14 @@ public class SecurityConfig {
                 .build();
     }
 
-    // 4) Filtro de CORS global para front-end
+    // 4) CORS config
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        // autoriza front-end local e Vercel
         config.setAllowedOriginPatterns(List.of(
                 "http://localhost:5173",
-                "https://financehub-frontend.vercel.app"
+                "https://financehub-frontend.vercel.app",
+                "https://financehub-frontend-dev-git-dev-gabrielvitorms-projects.vercel.app"
         ));
         config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
@@ -72,27 +72,30 @@ public class SecurityConfig {
         return source;
     }
 
-    // 5) Cadeia de filtros de segurança HTTP + JWT
+    // 5) SecurityFilterChain
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, JwtFilter jwtFilter) throws Exception {
         http
-                // habilita CORS com a configuração acima
-                .cors()
-                .and()
+                // aplica o corsConfigurationSource() automaticamente
+                .cors().configurationSource(corsConfigurationSource()).and()
+
+                // desativa csrf pois usamos JWT
                 .csrf().disable()
+
+                // estateless session (não cria cookie de sessão)
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .authorizeHttpRequests(auth -> auth
-                        // libera login
-                        .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
-                        // libera cadastro e listagem de usuários sem token
-                        .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll()
-                        .requestMatchers(HttpMethod.GET,  "/api/usuarios").permitAll()
-                        // todas as outras requerem JWT
-                        .anyRequest().authenticated()
-                )
-                // injeta seu filtro antes do UsernamePasswordAuthenticationFilter
+
+                // libera endpoints públicos
+                .authorizeHttpRequests()
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/auth/**", "/api/usuarios").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/usuarios").permitAll()
+                .anyRequest().authenticated()
+                .and()
+
+                // injeta nosso filtro JWT antes do UsernamePasswordAuthenticationFilter
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
