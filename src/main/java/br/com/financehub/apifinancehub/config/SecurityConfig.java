@@ -33,14 +33,21 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();
-        cfg.setAllowedOrigins(List.of("*"));             // ajuste para seu front em prod
+
+        // lista de domínios permitidos
+        cfg.setAllowedOrigins(List.of(
+                "http://localhost:5173",
+                "https://financehub-frontend-dev.vercel.app/"
+        ));
         cfg.setAllowedMethods(List.of("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
         cfg.setAllowedHeaders(List.of("*"));
         cfg.setAllowCredentials(true);
+
         UrlBasedCorsConfigurationSource src = new UrlBasedCorsConfigurationSource();
         src.registerCorsConfiguration("/**", cfg);
         return src;
     }
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
