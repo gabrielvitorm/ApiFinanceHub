@@ -15,21 +15,18 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.*;
-
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // 1) PasswordEncoder
+    // 1) Encoder de senha BCrypt
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // 2) UserDetailsService
+    // 2) Carrega o usuário do DB para as autenticações
     @Bean
     public UserDetailsService userDetailsService(UsuarioRepository repo) {
         return email -> repo.findByEmailUsuario(email)
@@ -40,7 +37,7 @@ public class SecurityConfig {
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
     }
 
-    // 3) AuthenticationManager
+    // 3) Expõe o AuthenticationManager pro AuthController
     @Bean
     public AuthenticationManager authenticationManager(
             HttpSecurity http,
@@ -54,48 +51,27 @@ public class SecurityConfig {
                 .build();
     }
 
-    // 4) CORS config
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOriginPatterns(List.of(
-                "http://localhost:5173",
-                "https://financehub-frontend.vercel.app",
-                "https://financehub-frontend-dev-git-dev-gabrielvitorms-projects.vercel.app"
-        ));
-        config.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
-        config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        return source;
-    }
-
-    // 5) SecurityFilterChain
+    // 4) Define a cadeia de filtros: CORS → CSRF off → Stateless → regras de rota → JWT
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, JwtFilter jwtFilter) throws Exception {
         http
-                // aplica o corsConfigurationSource() automaticamente
-                .cors().configurationSource(corsConfigurationSource()).and()
-
-                // desativa csrf pois usamos JWT
-                .csrf().disable()
-
-                // estateless session (não cria cookie de sessão)
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-
-                // libera endpoints públicos
-                .authorizeHttpRequests()
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/auth/**", "/api/usuarios").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/usuarios").permitAll()
-                .anyRequest().authenticated()
-                .and()
-
-                // injeta nosso filtro JWT antes do UsernamePasswordAuthenticationFilter
+                // usa o CORS configurado em WebMvcConfig
+                .cors().and()
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(sm -> sm
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .authorizeHttpRequests(auth -> auth
+                        // libera opções para preflight
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        // libera login e cadastro
+                        .requestMatchers(HttpMethod.POST, "/auth/**", "/api/usuarios").permitAll()
+                        // libera listagem de usuários sem token
+                        .requestMatchers(HttpMethod.GET, "/api/usuarios").permitAll()
+                        // todas as demais exigem token válido
+                        .anyRequest().authenticated()
+                )
+                // injeta seu filtro JWT antes do filtro padrão de login
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
