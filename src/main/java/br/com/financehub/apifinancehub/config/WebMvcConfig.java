@@ -12,9 +12,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 // origens que podem chamar sua API (inclua localhost e seu domínio Vercel)
                 .allowedOriginPatterns(
                         "http://localhost:5173",
+                        "http://localhost:3000",
                         "https://financehub-frontend.vercel.app",
                         "https://financehub-frontend-dev-git-dev-gabrielvitorms-projects.vercel.app/"
                 )
+
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
